@@ -4,8 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Vexyron — The Best Roblox Script Hub</title>
-  <link rel="icon" type="image/png" href="13122-removebg-preview_1.png" />
-  <link rel="apple-touch-icon" href="13122-removebg-preview_1.png" />
+  <link rel="icon" type="image/png" href="Vexyron.Logo.png" />
+  <link rel="apple-touch-icon" href="Vexyron.Logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -397,7 +397,7 @@
   <nav>
     <div class="nav-top-row">
       <div class="logo" style="display:flex;align-items:center;justify-content:flex-start;height:100%">
-        <img src="13122-removebg-preview_1.png" alt="Vexyron" style="height:32px;width:auto;display:block;object-fit:contain;vertical-align:middle;" />
+        <img src="Vexyron.Logo.png" alt="Vexyron" style="height:32px;width:auto;display:block;object-fit:contain;vertical-align:middle;" />
       </div>
     </div>
     <div class="nav-tabs">
@@ -605,7 +605,7 @@
       </div>
     </div>
 
-    <!-- SOUNDS -->
+    <!-- SCRIPTS -->
     <div class="panel" id="panel-sounds">
       <div class="section">
         <div class="section-label">Scripts</div>
@@ -615,7 +615,7 @@
             style="display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--white);border:none;color:#000;font-size:1.3rem;font-weight:300;line-height:1;box-shadow:0 4px 16px rgba(255,255,255,.12);transition:transform .2s,box-shadow .2s;"
             onmouseenter="this.style.transform='scale(1.12) rotate(90deg)'"
             onmouseleave="this.style.transform='scale(1) rotate(0deg)'"
-            title="Add Sound">+</button>
+            title="Add Script">+</button>
           <span id="owner-login-trigger" onclick="openOwnerLogin()" style="width:20px;height:20px;display:inline-block;opacity:0;cursor:default;"></span>
           <span id="owner-logout" onclick="ownerLogout()" style="display:none;font-size:.68rem;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;">Logout</span>
         </div>
@@ -732,7 +732,7 @@
 
   <footer>
     <div class="footer-logo">
-      <img src="13122-removebg-preview_1.png" alt="Vexyron" style="height:24px;width:auto;display:block;opacity:.8;" />
+      <img src="Vexyron.Logo.png" alt="Vexyron" style="height:24px;width:auto;display:block;opacity:.8;" />
     </div>
     <div class="footer-copy">© 2025 Vexyron Scripts — Not affiliated with Roblox Corporation</div>
     <div class="footer-links">
@@ -786,7 +786,7 @@
 
     const GH_USER  = 'voidscriptsdiscord';
     const GH_REPO  = 'VOIDScripts';
-    const GH_FILE  = 'sounds.json';
+    const GH_FILE  = 'Scripts.json';  // ← FIXED: was sounds.json
     let   GH_TOKEN = '';
 
     const GH_API = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -820,7 +820,7 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          message: 'Update sounds.json',
+          message: 'Update Scripts.json',
           content,
           sha: GH_SHA
         })
@@ -856,7 +856,7 @@
       const link     = document.getElementById('up-link').value.trim();
       const imageUrl = document.getElementById('up-img').value.trim();
       const cat      = document.getElementById('up-cat').value.trim();
-      const dur      = document.getElementById('up-dur').value.trim() || '0:05';
+      const dur      = document.getElementById('up-dur').value.trim() || 'v1.0';
       if (!title || !link || !cat) { document.getElementById('upload-error').style.display = 'block'; return; }
 
       const btn = document.querySelector('#modal-upload .modal-btn');
@@ -868,7 +868,7 @@
         await saveSoundsToGitHub(SOUNDS);
         closeModal('modal-upload');
         renderSounds(SOUNDS);
-        showToast('Sound published — everyone can see it!');
+        showToast('Script published — everyone can see it!');
       } catch(e) {
         SOUNDS.pop();
         document.getElementById('upload-error').textContent = 'Save failed. Check your token.';
@@ -881,15 +881,15 @@
 
     async function resetSounds() {
       if (!isOwner) return;
-      if (!confirm('Delete ALL sounds? This cannot be undone.')) return;
+      if (!confirm('Delete ALL scripts? This cannot be undone.')) return;
       try {
         SOUNDS = [];
         await saveSoundsToGitHub(SOUNDS);
         closeModal('modal-upload');
         renderSounds(SOUNDS);
-        showToast('All sounds deleted');
+        showToast('All scripts deleted');
       } catch(e) {
-        showToast('Error — could not delete sounds');
+        showToast('Error — could not delete scripts');
       }
     }
 
@@ -910,7 +910,7 @@
             <div class="sound-thumb">
               ${sound.imageUrl
                 ? `<img src="${sound.imageUrl}" alt="${sound.name}" style="width:100%;height:100%;object-fit:cover;border-radius:11px;position:absolute;inset:0;" />`
-                : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`
+                : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`
               }
             </div>
             <div class="sound-info">
@@ -955,7 +955,7 @@
       try {
         await saveSoundsToGitHub(SOUNDS);
         renderSounds(SOUNDS);
-        showToast('Sound deleted');
+        showToast('Script deleted');
       } catch(e) {
         showToast('Error — could not delete');
         loadSoundsFromGitHub();
@@ -987,7 +987,7 @@
       const link     = document.getElementById('edit-link').value.trim();
       const imageUrl = document.getElementById('edit-img').value.trim();
       const cat      = document.getElementById('edit-cat').value.trim();
-      const dur      = document.getElementById('edit-dur').value.trim() || '0:05';
+      const dur      = document.getElementById('edit-dur').value.trim() || 'v1.0';
       if (!title || !link || !cat) { document.getElementById('edit-error').style.display = 'block'; return; }
       const btn = document.querySelector('#modal-edit .modal-btn');
       btn.textContent = 'Saving...'; btn.disabled = true;
@@ -996,7 +996,7 @@
         await saveSoundsToGitHub(SOUNDS);
         closeModal('modal-edit');
         renderSounds(SOUNDS);
-        showToast('Sound updated');
+        showToast('Script updated');
       } catch(e) {
         document.getElementById('edit-error').textContent = 'Save failed. Check your token.';
         document.getElementById('edit-error').style.display = 'block';
@@ -1011,61 +1011,6 @@
       if (!url) { img.style.display='none'; return; }
       img.src = url; img.style.display = 'block';
       img.onerror = () => img.style.display = 'none';
-    }
-
-    let tickMap = {}, currentIdx = null;
-
-    function stopAll(exceptIdx) {
-      Object.keys(tickMap).forEach(i => {
-        const idx = parseInt(i);
-        if (idx === exceptIdx) return;
-        clearInterval(tickMap[idx]);
-        const card = document.querySelector(`.sound-card[data-idx="${idx}"]`);
-        if (!card) return;
-        card.classList.remove('playing');
-        const btn = document.getElementById(`playbtn-${idx}`);
-        if (btn) btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
-        const prog = document.getElementById(`progress-${idx}`);
-        if (prog) prog.style.width = '0%';
-        const tc = document.getElementById(`time-cur-${idx}`);
-        if (tc) tc.textContent = '0:00';
-      });
-    }
-
-    function togglePlay(idx) {
-      const sound  = SOUNDS[idx];
-      const card   = document.querySelector(`.sound-card[data-idx="${idx}"]`);
-      const btn    = document.getElementById(`playbtn-${idx}`);
-      const isPlay = !card.classList.contains('playing');
-      stopAll(isPlay ? idx : -1);
-      if (!isPlay) {
-        card.classList.remove('playing');
-        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
-        clearInterval(tickMap[idx]); currentIdx = null; return;
-      }
-      window.open(sound.voicemodUrl, '_blank');
-      card.classList.add('playing');
-      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
-      currentIdx = idx;
-      const parts = sound.duration.split(':');
-      const total = parseInt(parts[0])*60 + parseInt(parts[1]);
-      let elapsed = 0;
-      clearInterval(tickMap[idx]);
-      tickMap[idx] = setInterval(() => {
-        elapsed += 0.05;
-        if (elapsed >= total) {
-          clearInterval(tickMap[idx]);
-          card.classList.remove('playing');
-          btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
-          const p = document.getElementById(`progress-${idx}`); if (p) p.style.width='0%';
-          const t = document.getElementById(`time-cur-${idx}`); if (t) t.textContent='0:00';
-          currentIdx = null; return;
-        }
-        const pct = (elapsed/total)*100;
-        const p = document.getElementById(`progress-${idx}`); if (p) p.style.width = pct+'%';
-        const t = document.getElementById(`time-cur-${idx}`);
-        if (t) { const m=Math.floor(elapsed/60), s=Math.floor(elapsed%60).toString().padStart(2,'0'); t.textContent=`${m}:${s}`; }
-      }, 50);
     }
 
     function copyScript(idx) {

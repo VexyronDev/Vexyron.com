@@ -3,7 +3,7 @@
     "name": "Aima Assist ( Vexyron )",
     "desc": "Aima Assist bietet Aimbot, ESP und Triggerbot in einem kompakten Paket mit flüssiger Performance und einfachen Einstellungen.",
     "category": "Arsenal. Universal",
-    "imageUrl": "https://cdn.discordapp.com/attachments/1513310951389139134/1513499405100257391/image.png?ex=6a27f3a9&is=6a26a229&hm=d273268c8689395734b601594be64bc47c64ef518e921faa53d9c23f556cd940&",
+    "imageUrl": "https://media.discordapp.net/attachments/1513310951389139134/1513562532445552690/image.png?ex=6a282e74&is=6a26dcf4&hm=0d5ec06b83dd3026607e8c998e6cca9b98662dd4ba14501234b9be31848c9f9b&=&format=webp&quality=lossless&width=1054&height=447",
     "voicemodUrl": "loadstring(game:HttpGet(\"https://gist.githubusercontent.com/VexyronDev/8ae6059cf6b9f1e5f1130442ca4e0ae9/raw/Aima%20Assist%20Pro\"))()",
     "duration": "v2"
   }

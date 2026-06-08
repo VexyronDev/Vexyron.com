@@ -543,7 +543,7 @@ async function saveToGH(arr) {
     headers: { 'Authorization': `token ${GH_TOKEN}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: 'Update Scripts.json', content, sha: GH_SHA })
   });
-  if (!res.ok) throw new Error('Save failed');
+  if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Save failed'); }
   const data = await res.json();
   GH_SHA = data.content.sha;
 }
@@ -565,7 +565,7 @@ async function addScript() {
     closeModal('modal-upload');
     renderScripts(SCRIPTS);
     toast('Script veröffentlicht!');
-  } catch { SCRIPTS.pop(); document.getElementById('upload-err').textContent = 'Speichern fehlgeschlagen. Token prüfen.'; document.getElementById('upload-err').style.display = 'block'; }
+  } catch { SCRIPTS.pop(); document.getElementById('upload-err').textContent = 'Fehler: ' + (e.message || 'Token prüfen'); document.getElementById('upload-err').style.display = 'block'; }
   finally { btn.textContent = 'Veröffentlichen'; btn.disabled = false; }
 }
 

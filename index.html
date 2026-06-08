@@ -203,15 +203,7 @@
     .modal-cancel { width: 100%; padding: 10px; background: transparent; color: var(--text-2); border: 1px solid var(--border); border-radius: 10px; font-size: .78rem; font-family: 'Geist', sans-serif; cursor: pointer; transition: color .15s, border-color .15s; }
     .modal-cancel:hover { color: var(--text); border-color: var(--border-hover); }
     .modal-err { font-size: .72rem; color: var(--red); margin-bottom: 8px; display: none; }
-    .owner-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'Geist Mono', monospace; font-size: .56rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-3); background: var(--surface-1); border: 1px solid var(--border); padding: 3px 9px; border-radius: 100px; margin-bottom: 20px; }
 
-    /* OWNER CONTROLS */
-    #owner-add-btn { display: none; width: 32px; height: 32px; border-radius: 50%; background: var(--text); border: none; color: var(--bg); font-size: 1.1rem; line-height: 1; cursor: pointer; transition: transform .2s; flex-shrink: 0; }
-    #owner-add-btn:hover { transform: rotate(90deg); }
-    #owner-trigger { width: 16px; height: 16px; display: inline-block; opacity: 0; cursor: default; }
-    #owner-logout { display: none; font-size: .64rem; color: var(--text-3); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-    #owner-logout:hover { color: var(--text); }
-    #owner-logout.v { display: inline; }
 
     /* TOAST */
     #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px); background: rgba(245,245,247,0.95); color: #09090f; font-size: .72rem; font-weight: 700; padding: 10px 20px; border-radius: var(--r); opacity: 0; pointer-events: none; transition: opacity .2s, transform .3s cubic-bezier(.16,1,.3,1); z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,.35); }
@@ -355,9 +347,7 @@
       <div class="eyebrow">Scripts</div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
         <h2 class="heading" style="margin-bottom:0;">Scripts <em>Dashboard.</em></h2>
-        <button id="owner-add-btn" onclick="openUploadModal()" title="Add Script">+</button>
-        <span id="owner-trigger" onclick="openOwnerLogin()"></span>
-        <span id="owner-logout" onclick="ownerLogout()">Logout</span>
+
       </div>
       <p class="subtext">Browse all Vexyron scripts and copy them with one click.</p>
       <div class="notice">
@@ -372,7 +362,6 @@
 
 </div>
 
-<!-- Modals werden dynamisch per JS erstellt — KEIN password-input im HTML -->
 <div id="modal-container"></div>
 
 <footer>
@@ -437,89 +426,10 @@ function copyLoader() {
   }
 }
 
-/* ── OWNER ── */
-const OWNER_PW = 'void2025owner';
-let isOwner = false, GH_TOKEN = '';
+/* ── CONFIG ── */
+
 const GH_USER = 'VexyronDev', GH_REPO = 'Vexyron.web', GH_FILE = 'Scripts.json';
 const GH_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
-
-function openOwnerLogin() {
-  /* Modal wird erst JETZT dynamisch erstellt */
-  buildModal('modal-login', `
-    <div class="modal-box">
-      <div class="modal-title">Owner Login</div>
-      <div class="modal-sub">Passwort und GitHub Token eingeben.</div>
-      <div class="modal-err" id="login-err">Falsches Passwort.</div>
-      <div class="modal-row">
-        <label class="modal-label">Passwort</label>
-        <input class="modal-field" id="owner-pw" autocomplete="new-password" placeholder="••••••••"/>
-      </div>
-      <div class="modal-row">
-        <label class="modal-label">GitHub Token</label>
-        <input class="modal-field" id="owner-token" autocomplete="off" placeholder="ghp_..." />
-      </div>
-      <button class="modal-btn" onclick="ownerLogin()">Login</button>
-      <button class="modal-cancel" onclick="closeModal('modal-login')">Abbrechen</button>
-    </div>
-  `);
-  /* Felder als type="text" laden, dann per JS auf password setzen */
-  setTimeout(() => {
-    const pw  = document.getElementById('owner-pw');
-    const tok = document.getElementById('owner-token');
-    if (pw)  pw.type  = 'password';
-    if (tok) tok.type = 'password';
-    if (tok) tok.onkeydown = e => { if (e.key === 'Enter') ownerLogin(); };
-  }, 10);
-
-  document.getElementById('login-err').style.display = 'none';
-  openModal('modal-login');
-}
-
-function ownerLogin() {
-  const pw = document.getElementById('owner-pw')?.value || '';
-  const tk = document.getElementById('owner-token')?.value?.trim() || '';
-  if (pw === OWNER_PW && tk.startsWith('ghp_')) {
-    isOwner = true; GH_TOKEN = tk;
-    closeModal('modal-login');
-    document.getElementById('owner-add-btn').style.display = 'flex';
-    document.getElementById('owner-logout').classList.add('v');
-    document.getElementById('owner-trigger').style.display = 'none';
-    toast('⬡ Owner mode active');
-    renderScripts(SCRIPTS);
-  } else {
-    const err = document.getElementById('login-err');
-    err.textContent = pw !== OWNER_PW ? 'Falsches Passwort.' : 'Ungültiger Token — muss mit ghp_ beginnen';
-    err.style.display = 'block';
-  }
-}
-
-function ownerLogout() {
-  isOwner = false; GH_TOKEN = '';
-  document.getElementById('owner-add-btn').style.display = 'none';
-  document.getElementById('owner-logout').classList.remove('v');
-  renderScripts(SCRIPTS);
-}
-
-function openUploadModal() {
-  if (!isOwner) return;
-  buildModal('modal-upload', `
-    <div class="modal-box wide">
-      <div class="modal-title">Script hinzufügen</div>
-      <div class="owner-badge">Owner Only</div>
-      <div class="modal-row"><label class="modal-label">Script Name</label><input class="modal-field" type="text" id="up-title" placeholder="z.B. Blox Fruits Auto Farm"/></div>
-      <div class="modal-row"><label class="modal-label">Beschreibung</label><input class="modal-field" type="text" id="up-desc" placeholder="Kurze Beschreibung..."/></div>
-      <div class="modal-row"><label class="modal-label">Script (Lua)</label><textarea class="modal-field" id="up-link" placeholder="loadstring(game:HttpGet(...))()" style="height:80px;resize:vertical;font-family:'Geist Mono',monospace;font-size:.72rem;"></textarea></div>
-      <div class="modal-row"><label class="modal-label">Thumbnail URL (optional)</label><input class="modal-field" type="text" id="up-img" placeholder="https://..."/></div>
-      <div class="modal-row"><label class="modal-label">Kategorie</label><input class="modal-field" type="text" id="up-cat" placeholder="z.B. Blox Fruits, Universal"/></div>
-      <div class="modal-row"><label class="modal-label">Version</label><input class="modal-field" type="text" id="up-dur" placeholder="v1.0"/></div>
-      <div class="modal-err" id="upload-err">Bitte alle Pflichtfelder ausfüllen.</div>
-      <button class="modal-btn" onclick="addScript()">Veröffentlichen</button>
-      <button class="modal-cancel" onclick="closeModal('modal-upload')">Abbrechen</button>
-      <button class="modal-cancel" style="margin-top:6px;color:var(--red);border-color:rgba(255,69,58,.2);" onclick="resetScripts()">Alle Scripts löschen</button>
-    </div>
-  `);
-  openModal('modal-upload');
-}
 
 /* ── GITHUB DATA ── */
 let SCRIPTS = [], GH_SHA = '';
@@ -537,91 +447,17 @@ async function loadFromGH() {
   } catch { grid.innerHTML = ''; document.getElementById('scripts-empty').style.display = 'block'; }
 }
 
-async function saveToGH(arr) {
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2))));
-  const res = await fetch(GH_API, {
-    method: 'PUT',
-    headers: { 'Authorization': `token ${GH_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: 'Update Scripts.json', content, sha: GH_SHA })
-  });
-  if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Save failed'); }
-  const data = await res.json();
-  GH_SHA = data.content.sha;
-}
 
-async function addScript() {
-  if (!isOwner) return;
-  const title = document.getElementById('up-title')?.value.trim() || '';
-  const desc  = document.getElementById('up-desc')?.value.trim()  || '';
-  const link  = document.getElementById('up-link')?.value.trim()  || '';
-  const img   = document.getElementById('up-img')?.value.trim()   || '';
-  const cat   = document.getElementById('up-cat')?.value.trim()   || '';
-  const dur   = document.getElementById('up-dur')?.value.trim()   || 'v1.0';
-  if (!title || !link || !cat) { document.getElementById('upload-err').style.display = 'block'; return; }
-  const btn = document.querySelector('#modal-upload .modal-btn');
-  btn.textContent = 'Veröffentliche…'; btn.disabled = true;
-  try {
-    SCRIPTS.push({ name:title, desc:desc||'—', category:cat, imageUrl:img, voicemodUrl:link, duration:dur });
-    await saveToGH(SCRIPTS);
-    closeModal('modal-upload');
-    renderScripts(SCRIPTS);
-    toast('Script veröffentlicht!');
-  } catch { SCRIPTS.pop(); document.getElementById('upload-err').textContent = 'Fehler: ' + (e.message || 'Token prüfen'); document.getElementById('upload-err').style.display = 'block'; }
-  finally { btn.textContent = 'Veröffentlichen'; btn.disabled = false; }
-}
 
-async function resetScripts() {
-  if (!isOwner || !confirm('ALLE Scripts löschen? Nicht rückgängig!')) return;
-  try { SCRIPTS = []; await saveToGH(SCRIPTS); closeModal('modal-upload'); renderScripts(SCRIPTS); toast('Alle Scripts gelöscht'); }
-  catch { toast('Fehler'); }
-}
 
-async function deleteScript(idx) {
-  if (!isOwner || !confirm(`"${SCRIPTS[idx].name}" löschen?`)) return;
-  SCRIPTS.splice(idx, 1);
-  try { await saveToGH(SCRIPTS); renderScripts(SCRIPTS); toast('Script gelöscht'); }
-  catch { toast('Fehler'); loadFromGH(); }
-}
 
-function openEditModal(idx) {
-  if (!isOwner) return;
-  const s = SCRIPTS[idx];
-  buildModal('modal-edit', `
-    <div class="modal-box wide">
-      <div class="modal-title">Script bearbeiten</div>
-      <div class="owner-badge">Owner Only</div>
-      <input type="hidden" id="edit-idx" value="${idx}"/>
-      <div class="modal-row"><label class="modal-label">Name</label><input class="modal-field" type="text" id="edit-title" value="${s.name}"/></div>
-      <div class="modal-row"><label class="modal-label">Beschreibung</label><input class="modal-field" type="text" id="edit-desc" value="${s.desc}"/></div>
-      <div class="modal-row"><label class="modal-label">Script</label><textarea class="modal-field" id="edit-link" style="height:80px;resize:vertical;font-family:'Geist Mono',monospace;font-size:.72rem;">${s.voicemodUrl}</textarea></div>
-      <div class="modal-row"><label class="modal-label">Thumbnail URL</label><input class="modal-field" type="text" id="edit-img" value="${s.imageUrl||''}"/></div>
-      <div class="modal-row"><label class="modal-label">Kategorie</label><input class="modal-field" type="text" id="edit-cat" value="${s.category}"/></div>
-      <div class="modal-row"><label class="modal-label">Version</label><input class="modal-field" type="text" id="edit-dur" value="${s.duration}"/></div>
-      <div class="modal-err" id="edit-err">Bitte alle Pflichtfelder ausfüllen.</div>
-      <button class="modal-btn" onclick="saveEdit()">Speichern</button>
-      <button class="modal-cancel" onclick="closeModal('modal-edit')">Abbrechen</button>
-    </div>
-  `);
-  openModal('modal-edit');
-}
 
-async function saveEdit() {
-  if (!isOwner) return;
-  const idx   = parseInt(document.getElementById('edit-idx').value);
-  const title = document.getElementById('edit-title')?.value.trim() || '';
-  const desc  = document.getElementById('edit-desc')?.value.trim()  || '';
-  const link  = document.getElementById('edit-link')?.value.trim()  || '';
-  const img   = document.getElementById('edit-img')?.value.trim()   || '';
-  const cat   = document.getElementById('edit-cat')?.value.trim()   || '';
-  const dur   = document.getElementById('edit-dur')?.value.trim()   || 'v1.0';
-  if (!title || !link || !cat) { document.getElementById('edit-err').style.display = 'block'; return; }
-  const btn = document.querySelector('#modal-edit .modal-btn');
-  btn.textContent = 'Speichere…'; btn.disabled = true;
-  SCRIPTS[idx] = { name:title, desc:desc||'—', category:cat, imageUrl:img, voicemodUrl:link, duration:dur };
-  try { await saveToGH(SCRIPTS); closeModal('modal-edit'); renderScripts(SCRIPTS); toast('Script aktualisiert'); }
-  catch { document.getElementById('edit-err').textContent = 'Speichern fehlgeschlagen.'; document.getElementById('edit-err').style.display = 'block'; }
-  finally { btn.textContent = 'Speichern'; btn.disabled = false; }
-}
+
+
+
+
+
+
 
 function copyScript(idx) {
   const btn  = document.getElementById(`cs-${idx}`);
@@ -700,15 +536,7 @@ function renderScripts(list) {
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Copy Script
         </button>
-        ${isOwner ? `
-        <div style="display:flex;gap:6px;margin-top:6px;">
-          <button onclick="openEditModal(${gi})" style="flex:1;padding:8px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text-2);font-size:.7rem;font-weight:600;font-family:'Geist',sans-serif;cursor:pointer;"
-            onmouseenter="this.style.borderColor='var(--border-hover)';this.style.color='var(--text)'"
-            onmouseleave="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">Bearbeiten</button>
-          <button onclick="deleteScript(${gi})" style="flex:1;padding:8px;background:transparent;border:1px solid rgba(255,69,58,.2);border-radius:8px;color:var(--red);font-size:.7rem;font-weight:600;font-family:'Geist',sans-serif;cursor:pointer;"
-            onmouseenter="this.style.background='rgba(255,69,58,.08)';this.style.borderColor='rgba(255,69,58,.4)'"
-            onmouseleave="this.style.background='transparent';this.style.borderColor='rgba(255,69,58,.2)'">Löschen</button>
-        </div>` : ''}
+  
       </div>
     `;
     grid.appendChild(card);

@@ -221,7 +221,8 @@
 <canvas id="stars" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></canvas>
 
 <nav>
-  <span style="font-size:.82rem;font-weight:700;color:var(--text);">Vexyron<span style="color:var(--accent);">.</span></span>
+  <img src="https://raw.githubusercontent.com/voidscriptsdiscord/VOIDScripts/main/logo.png" alt="Vexyron" style="height:26px;width:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.92;" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"/>
+  <span style="font-size:.82rem;font-weight:700;color:var(--text);display:none;">Vexyron<span style="color:var(--accent);">.</span></span>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="go('home')">Home</button>
     <button class="nav-tab" onclick="go('features')">Features</button>
@@ -402,14 +403,19 @@ function closeModal(id) { document.getElementById(id)?.classList.remove('open');
 function copyLoader() {
   const text = document.getElementById('loader-text').textContent;
   const btn  = document.getElementById('loader-btn');
-  navigator.clipboard.writeText(text).then(() => {
+  function onSuccess() {
     btn.textContent = '✓ Copied!'; btn.classList.add('copied');
     toast('✓ Copied to clipboard');
     setTimeout(() => {
       btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
       btn.classList.remove('copied');
     }, 2000);
-  });
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
+  } else {
+    fallbackCopy(text, onSuccess);
+  }
 }
 
 /* ── OWNER ── */
@@ -599,8 +605,10 @@ async function saveEdit() {
 }
 
 function copyScript(idx) {
-  const btn = document.getElementById(`cs-${idx}`);
-  navigator.clipboard.writeText(SCRIPTS[idx].voicemodUrl).then(() => {
+  const btn  = document.getElementById(`cs-${idx}`);
+  const text = SCRIPTS[idx].voicemodUrl;
+
+  function onSuccess() {
     btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
     btn.style.color = 'var(--green)'; btn.style.borderColor = 'rgba(48,209,88,.3)';
     toast('✓ Script kopiert!');
@@ -608,7 +616,34 @@ function copyScript(idx) {
       btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Script`;
       btn.style.color = ''; btn.style.borderColor = '';
     }, 2000);
-  });
+  }
+
+  /* Moderne Clipboard API (Desktop + neuere Mobile) */
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
+  } else {
+    fallbackCopy(text, onSuccess);
+  }
+}
+
+/* Fallback für ältere Mobile-Browser (iOS Safari etc.) */
+function fallbackCopy(text, cb) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    /* iOS braucht setSelectionRange */
+    ta.setSelectionRange(0, 99999);
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (ok) cb();
+    else toast('⚠ Kopieren fehlgeschlagen — manuell kopieren');
+  } catch {
+    toast('⚠ Kopieren fehlgeschlagen — manuell kopieren');
+  }
 }
 
 function filterScripts() {

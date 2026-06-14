@@ -147,7 +147,7 @@
     .card::after {
       content: '';
       position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-      background: radial-gradient(circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,0.18) 0%, rgba(120,120,255,0.06) 40%, transparent 65%);
+      background: radial-gradient(circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,0.08) 0%, rgba(120,120,255,0.03) 40%, transparent 60%);
       opacity: 0; transition: opacity .2s; z-index: 1;
     }
     .card.tilt-active::after { opacity: 1; }
@@ -764,6 +764,8 @@ loadFromGH();
       tarRx=0; tarRy=0; tarScale=1; tarLift=0; tarGx=50; tarGy=50;
       card.classList.remove('tilt-active');
       card.style.zIndex = '';
+      card.style.setProperty('--gx', '50%');
+      card.style.setProperty('--gy', '50%');
       if(!raf) raf = requestAnimationFrame(loop);
     });
   }

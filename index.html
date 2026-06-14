@@ -328,7 +328,7 @@ footer{position:relative;z-index:10;border-top:1px solid var(--b0);padding:18px 
       <div class="loader-wrap">
         <div class="loader-label">Universal Loader</div>
         <div class="loader-box">
-          <div class="loader-code" id="loader-text">loadstring(game:HttpGet("https://gist.githubusercontent.com/VexyronDev/dd66aca2cbff2248b80a14ffe9b4ed16/raw/e55b41ccb9d543d81a27051d882be139d504bb56/Vexyron_Hubs"))()</div>
+          <div class="loader-code" id="loader-text">loadstring(game:HttpGet("https://gist.githubusercontent.com/VexyronDev/dd66aca2cbff2248b80a14ffe9b4ed16/raw/Vexyron_Hubs", true))()</div>
           <button class="loader-copy" id="loader-btn" onclick="copyLoader()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             Copy
@@ -559,7 +559,7 @@ function renderScripts(list) {
     card.className = 'card script-card';
     card.innerHTML = `
       <div class="script-thumb">
-        ${s.imageUrl ? `<img src="${s.imageUrl}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>` : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`}
+        ${s.imageUrl ? `<img src="${s.imageUrl}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" onerror="this.style.display='none'"/>` : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.25"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`}
       </div>
       <div class="script-info">
         <div class="script-name">${s.name}</div>

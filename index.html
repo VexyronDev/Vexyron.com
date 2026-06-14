@@ -355,6 +355,7 @@
       .scripts-grid { grid-template-columns: 1fr !important; gap: 8px; }
     }
 
+
     @media(prefers-reduced-motion: reduce) {
       .blob,.orb,.ring,.shimmer-word,.scanlines,.marquee-track { animation: none !important; }
       .card { transition: none !important; transform: none !important; }
@@ -681,6 +682,7 @@ function renderScripts(list) {
 
 loadFromGH();
 
+
 /* ── 3D TILT auf allen .card Elementen ── */
 (function(){
   const TILT  = 18;
@@ -723,12 +725,14 @@ loadFromGH();
 
       /* loop stoppen wenn alles nah genug an 0 ist und nicht inside */
       const settled = !inside
-        && Math.abs(curRx) < 0.02 && Math.abs(curRy) < 0.02
-        && Math.abs(curScale - 1) < 0.0004 && Math.abs(curLift) < 0.1;
+        && Math.abs(curRx) < 0.03 && Math.abs(curRy) < 0.03
+        && Math.abs(curScale - 1) < 0.0005 && Math.abs(curLift) < 0.15;
 
       if(settled){
+        curRx=0; curRy=0; curScale=1; curLift=0;
         card.style.transform = '';
         card.style.boxShadow = '';
+        card.style.zIndex = '';
         raf = null;
       } else {
         raf = requestAnimationFrame(loop);
@@ -757,9 +761,7 @@ loadFromGH();
 
     card.addEventListener('mouseleave', () => {
       inside = false;
-      tarRx    = 0; tarRy  = 0;
-      tarScale = 1; tarLift = 0;
-      tarGx    = 50; tarGy  = 50;
+      tarRx=0; tarRy=0; tarScale=1; tarLift=0; tarGx=50; tarGy=50;
       card.classList.remove('tilt-active');
       card.style.zIndex = '';
       if(!raf) raf = requestAnimationFrame(loop);

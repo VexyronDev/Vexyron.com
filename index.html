@@ -71,8 +71,7 @@ nav{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;widt
 
 /* CARD */
 .card{background:var(--card);border:1px solid var(--b0);border-radius:var(--rl);box-shadow:0 1px 0 rgba(255,255,255,.03) inset;transition:border-color .18s,opacity .28s ease;transform-style:preserve-3d;will-change:transform,opacity;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.06)0%,transparent 55%);opacity:0;transition:opacity .18s;z-index:1}
-.card.lit::after{opacity:1}
+
 .card:hover{border-color:var(--b1)}
 
 /* HERO */
@@ -192,6 +191,69 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
   .b,#stars,.shimmer{animation:none!important}
   .card{transition:border-color .15s,opacity .15s!important;transform:none!important}
 }
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:none}
+
+
+
+/* ── CARD SHINE ON HOVER ── */
+.card .shine{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;opacity:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.06) 50%,transparent 70%);background-size:200% 100%;background-position:200% 0;transition:none}
+
+/* ── NAV PILL GLOW ── */
+#tab-pill{box-shadow:0 0 12px rgba(107,107,255,.2)}
+
+/* ── HERO TITLE GLOW ── */
+.shimmer{text-shadow:0 0 80px rgba(107,107,255,.15)}
+
+/* ── LOADER BOX BORDER ── */
+.loader-box{transition:box-shadow .3s ease}
+.loader-box:hover{box-shadow:0 0 0 1px rgba(107,107,255,.3),0 0 20px rgba(107,107,255,.08)}
+
+/* ── COPY BTN HOVER ── */
+.copy-btn:hover{background:rgba(255,255,255,.09);border-color:var(--b1);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.copy-btn:active{transform:scale(.97);box-shadow:none}
+
+/* ── STAT CARD HOVER GLOW ── */
+.stat:hover .stat-n{color:#fff;text-shadow:0 0 20px rgba(107,107,255,.4);transition:text-shadow .2s,color .2s}
+
+/* ── DONATE CARD HOVER ── */
+.d-card:hover .d-amt{color:#fff;text-shadow:0 0 16px rgba(107,107,255,.5)}
+.d-amt,.d-rbx,.d-lbl{transition:all .2s}
+
+/* ── FEAT ICON GLOW ON HOVER ── */
+.card:hover .feat-icon svg{color:rgba(200,200,255,.9);filter:drop-shadow(0 0 6px rgba(107,107,255,.4));transition:color .2s,filter .2s}
+
+/* ── SEARCH FOCUS GLOW ── */
+.search:focus{border-color:rgba(107,107,255,.4);box-shadow:0 0 0 3px rgba(107,107,255,.08),0 0 20px rgba(107,107,255,.06)}
+
+/* ── BTN GLOW ── */
+.btn:hover{box-shadow:0 6px 20px rgba(0,0,0,.35),0 0 20px rgba(107,107,255,.12)}
+
+/* ── STAGGER CHILDREN ── */
+.g3 .card:nth-child(1){transition-delay:.03s}
+.g3 .card:nth-child(2){transition-delay:.06s}
+.g3 .card:nth-child(3){transition-delay:.09s}
+.g3 .card:nth-child(4){transition-delay:.12s}
+.g3 .card:nth-child(5){transition-delay:.15s}
+.g3 .card:nth-child(6){transition-delay:.18s}
+.gcols .card:nth-child(1){transition-delay:.03s}
+.gcols .card:nth-child(2){transition-delay:.06s}
+.gcols .card:nth-child(3){transition-delay:.09s}
+.gcols .card:nth-child(4){transition-delay:.12s}
+
+
+
+/* ── REVIEWS STARS PULSE ── */
+.star-btn:hover{transform:scale(1.3);transition:transform .15s cubic-bezier(.34,1.56,.64,1)}
+
+/* ── NOTICE PULSE ── */
+@keyframes noticePulse{0%,100%{border-color:rgba(255,255,255,.07)}50%{border-color:rgba(107,107,255,.2)}}
+.notice{animation:noticePulse 3s ease-in-out infinite}
+
+/* ── DIVIDER GRADIENT ── */
+.divider{background:linear-gradient(90deg,transparent,rgba(255,255,255,.08) 30%,rgba(107,107,255,.12) 50%,rgba(255,255,255,.08) 70%,transparent)}
 </style>
 </head>
 <body>
@@ -211,7 +273,6 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
     <button class="tab" onclick="go('socials')">Socials</button>
     <button class="tab" onclick="go('scripts')">Scripts</button>
     <button class="tab" onclick="go('donate')">Donate</button>
-    <button class="tab" onclick="go('reviews')">Reviews</button>
   </div>
 </nav>
 
@@ -357,74 +418,11 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
       <div class="eyebrow">Support</div>
       <h2 class="h1">Donate <em>Robux.</em></h2>
       <p class="sub">Support the team. Every donation keeps Vexyron free for everyone.</p>
-
-      <!-- Method selector -->
-      <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
-        <button onclick="setDonateMethod('robux')" id="btn-robux" class="donate-method-btn active-method" style="display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:var(--r);border:1px solid rgba(107,107,255,.4);background:rgba(107,107,255,.1);color:var(--t0);font-family:Geist,sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s">
-          <span style="font-size:1em;line-height:1">⏣</span>
-          Donate with Robux
-          <svg id="arrow-robux" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <button onclick="setDonateMethod('paypal')" id="btn-paypal" class="donate-method-btn" style="display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:var(--r);border:1px solid var(--b0);background:rgba(255,255,255,.04);color:var(--t1);font-family:Geist,sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;opacity:.5">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#009cde"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 6.082-8.558 6.082H9.828l-1.51 9.568h3.562l.992-6.29h2.104c4.744 0 7.564-2.29 8.418-6.83.28-1.495.086-2.67-.172-3.243z"/></svg>
-          PayPal
-          <span style="font-size:.56rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(255,255,255,.08);color:rgba(238,238,243,.35);padding:2px 7px;border-radius:100px">Soon</span>
-        </button>
-      </div>
-
-      <!-- Robux grid dropdown -->
-      <div id="donate-robux-section" style="overflow:visible;transition:max-height .35s cubic-bezier(.16,1,.3,1),opacity .25s ease;max-height:2000px;opacity:1">
-        <div class="d-grid" id="donate-grid" style="padding:4px;margin:-4px"></div>
-      </div>
-
-      <!-- PayPal coming soon -->
-      <div id="donate-paypal-section" style="display:none;overflow:visible;transition:max-height .35s cubic-bezier(.16,1,.3,1),opacity .25s ease;max-height:0;opacity:0;padding:4px;margin:-4px">
-        <div class="card" style="padding:32px;text-align:center">
-          
-          <div style="font-size:.9rem;font-weight:600;color:var(--t0);margin-bottom:8px">PayPal coming soon</div>
-          <div style="font-size:.78rem;color:var(--t1)">We are working on it. For now please use Robux Gamepass to support us.</div>
-        </div>
-      </div>
+      <div class="d-grid" id="donate-grid" style="padding:4px;margin:-4px"></div>
 
     </div>
   </div>
 
-  <!-- REVIEWS -->
-  <div class="panel" id="panel-reviews">
-    <div class="page">
-      <div class="eyebrow">Community</div>
-      <h2 class="h1">Reviews.</h2>
-      <p class="sub">What the community thinks. Leave your own review below.</p>
-
-      <!-- Write review -->
-      <div class="card" style="padding:24px;margin-bottom:24px">
-        <div style="font-size:.72rem;font-weight:600;color:var(--t0);margin-bottom:16px">Write a Review</div>
-
-        <!-- Stars picker -->
-        <div style="display:flex;gap:6px;margin-bottom:14px" id="star-picker">
-          <span class="star-btn" data-v="1" onclick="setStar(1)" style="cursor:pointer;font-size:1.3rem;opacity:.3">★</span>
-          <span class="star-btn" data-v="2" onclick="setStar(2)" style="cursor:pointer;font-size:1.3rem;opacity:.3">★</span>
-          <span class="star-btn" data-v="3" onclick="setStar(3)" style="cursor:pointer;font-size:1.3rem;opacity:.3">★</span>
-          <span class="star-btn" data-v="4" onclick="setStar(4)" style="cursor:pointer;font-size:1.3rem;opacity:.3">★</span>
-          <span class="star-btn" data-v="5" onclick="setStar(5)" style="cursor:pointer;font-size:1.3rem;opacity:.3">★</span>
-        </div>
-
-        <input id="review-name" placeholder="Your name..." style="width:100%;padding:10px 13px;background:rgba(255,255,255,.04);border:1px solid var(--b0);border-radius:var(--r);font-family:Geist,sans-serif;font-size:.78rem;color:var(--t0);outline:none;margin-bottom:8px;transition:border-color .15s" onfocus="this.style.borderColor='var(--b1)'" onblur="this.style.borderColor='var(--b0)'" />
-        <textarea id="review-text" placeholder="Share your experience..." rows="3" style="width:100%;padding:10px 13px;background:rgba(255,255,255,.04);border:1px solid var(--b0);border-radius:var(--r);font-family:Geist,sans-serif;font-size:.78rem;color:var(--t0);outline:none;resize:none;margin-bottom:12px;transition:border-color .15s;display:block" onfocus="this.style.borderColor='var(--b1)'" onblur="this.style.borderColor='var(--b0)'"></textarea>
-
-        <button onclick="submitReview()" style="display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;font-family:Geist,sans-serif;padding:9px 18px;border-radius:var(--r);border:1px solid var(--b0);cursor:pointer;background:rgba(255,255,255,.06);color:var(--t0);transition:background .14s,border-color .14s">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Submit Review
-        </button>
-        <div id="review-msg" style="font-size:.72rem;margin-top:10px;display:none"></div>
-      </div>
-
-      <!-- Reviews list -->
-      <div class="gcols" id="reviews-list">
-        <div style="text-align:center;padding:32px;color:var(--t2);font-size:.78rem">Loading reviews...</div>
-      </div>
-    </div>
-  </div>
 
 </div><!-- /slide-clip -->
 </div>
@@ -436,7 +434,7 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
 <div id="toast">Copied!</div>
 
 <script>
-var TABS = ['home','features','team','socials','scripts','donate','reviews'];
+var TABS = ['home','features','team','socials','scripts','donate'];
 
 function movePill(el) {
   var pill = document.getElementById('tab-pill');
@@ -586,21 +584,26 @@ function renderScripts(list) {
       '<div style="padding:0 12px 12px;margin-top:auto"><button class="copy-btn" id="sc-' + i + '" onclick="copyScript(' + i + ')">' +
       '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Script</button></div>';
     grid.appendChild(el);
-    tilt(el);
+    attachCard(el);
   });
 }
 
 /* DONATE GRID */
 (function() {
-  var amounts = [100,200,300,400,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000,8500,9000,9500,10000];
+  var amounts = [100,200,300,400,500,600,700,800];
+  var available = {100:true,200:true,300:true,400:true,500:true,600:true,700:true,800:true};
   var grid = document.getElementById('donate-grid');
   amounts.forEach(function(amt) {
     var el = document.createElement('div');
     el.className = 'card d-card';
-    el.innerHTML = '<div class="d-amt">' + amt + '</div><div class="d-rbx" style="display:flex;align-items:center;justify-content:center;gap:4px">⏣ Robux</div><div class="d-lbl">Gamepass</div>';
-    el.onclick = function() { openDonateModal(amt); };
+    var isAvail = available[amt];
+    el.innerHTML = '<div class="d-amt" style="' + (isAvail ? '' : 'opacity:.45') + '">' + amt + '</div>' +
+      '<div class="d-rbx" style="display:flex;align-items:center;justify-content:center;gap:4px;' + (isAvail ? '' : 'opacity:.35') + '">⏣ Robux</div>' +
+      '<div class="d-lbl">' + (isAvail ? 'Tap to donate' : 'Coming soon') + '</div>';
+    if (!isAvail) { el.style.cursor = 'default'; el.style.opacity = '.6'; }
+    (function(a, avail) { el.onclick = function() { if(avail) openDonateModal(a); else toast('Coming soon!'); }; })(amt, isAvail);
     grid.appendChild(el);
-    tilt(el);
+    attachCard(el);
   });
 })();
 
@@ -690,8 +693,7 @@ function tilt(card) {
     var sx=(ry/TILT)*9, sy=(-rx/TILT)*9+14, sp=9+Math.hypot(rx,ry)/TILT*14;
     card.style.transform='perspective(700px) rotateX('+rx.toFixed(3)+'deg) rotateY('+ry.toFixed(3)+'deg) translateZ('+lz.toFixed(2)+'px)';
     card.style.boxShadow=sx.toFixed(1)+'px '+sy.toFixed(1)+'px '+(sp+14).toFixed(1)+'px rgba(0,0,0,.42),0 0 24px rgba(90,90,255,.07),inset 0 1px 0 rgba(255,255,255,.04)';
-    card.style.setProperty('--mx', mx.toFixed(1)+'%');
-    card.style.setProperty('--my', my.toFixed(1)+'%');
+
     var done = !inside && Math.abs(rx)<.02 && Math.abs(ry)<.02 && Math.abs(lz)<.1;
     if(done) { rx=ry=lz=0; card.style.transform=''; card.style.boxShadow=''; raf=null; }
     else raf = requestAnimationFrame(loop);
@@ -708,12 +710,22 @@ function tilt(card) {
   });
   card.addEventListener('mouseleave', function() {
     inside=false; trx=tryv=tlz=0; tmx=tmy=50;
-    card.classList.remove('lit'); card.style.zIndex='';
+    card.style.zIndex='';
     rippleReset(); if(!raf) raf=requestAnimationFrame(loop);
+    var sh = card.querySelector('.shine');
+    if (sh) { sh.style.transition = 'opacity .2s ease'; sh.style.opacity = '0'; }
   });
 }
 
-document.querySelectorAll('.card').forEach(tilt);
+function attachCard(c) {
+  if (c._vexy) return;
+  c._vexy = true;
+  tilt(c);
+  var s = document.createElement('div');
+  s.className = 'shine';
+  c.appendChild(s);
+}
+document.querySelectorAll('.card').forEach(attachCard);
 
 function loadReviews() {
   var grid = document.getElementById('reviews-grid');
@@ -734,7 +746,7 @@ function loadReviews() {
           '<p style="font-size:.8rem;color:var(--t1);line-height:1.75;margin-bottom:12px">"' + r.text + '"</p>' +
           '<div style="font-size:.68rem;color:var(--t2);font-family:Geist Mono,monospace">' + r.name + (r.role ? ' · ' + r.role : '') + '</div>';
         grid.appendChild(el);
-        tilt(el);
+        attachCard(el);
       });
       if (!data.length) grid.innerHTML = '<div style="text-align:center;padding:32px;color:var(--t2);font-size:.78rem">No reviews yet.</div>';
     })
@@ -744,69 +756,43 @@ function loadReviews() {
 }
 
 
+var DONATE_LINKS = {
+  100: 'https://www.roblox.com/de/game-pass/1875844417/Donate-100-R',
+  200: 'https://www.roblox.com/de/game-pass/1875772326/Donate-200-R',
+  300: 'https://www.roblox.com/de/game-pass/1875088432/Donate-300-R',
+  400: 'https://www.roblox.com/de/game-pass/1875970369/Donate-400-R',
+  500: 'https://www.roblox.com/de/game-pass/1874794518/Donate-500-R',
+  600: 'https://www.roblox.com/de/game-pass/1879678254/Donate-600-R',
+  700: 'https://www.roblox.com/de/game-pass/1875760433/Donate-700-R',
+  800: 'https://www.roblox.com/de/game-pass/1879534257/Donate-800-R'
+};
+
 function openDonateModal(amt) {
   var modal = document.getElementById('donate-modal');
+  var box   = document.getElementById('modal-box');
   var title = document.getElementById('modal-title');
   var link  = document.getElementById('modal-robux-link');
-  title.textContent = amt + ' Robux';
-  link.href = '#'; /* replace with real gamepass link */
-  modal.style.display = 'flex';
+  title.textContent = amt;
+  link.href = DONATE_LINKS[amt] || '#';
+  modal.style.visibility = 'visible';
+  modal.style.opacity = '1';
+  box.style.opacity = '1';
+  box.style.transform = 'scale(1) translateY(0)';
 }
 
 function closeModal() {
-  document.getElementById('donate-modal').style.display = 'none';
+  var modal = document.getElementById('donate-modal');
+  var box   = document.getElementById('modal-box');
+  modal.style.opacity = '0';
+  modal.style.visibility = 'hidden';
+  box.style.opacity = '0';
+  box.style.transform = 'scale(.88) translateY(20px)';
 }
 
 document.addEventListener('click', function(e) {
   var modal = document.getElementById('donate-modal');
   if (modal && e.target === modal) closeModal();
 });
-
-/* ── DONATE METHOD ── */
-var currentMethod = 'robux';
-
-function setDonateMethod(method) {
-  currentMethod = method;
-  var robuxBtn   = document.getElementById('btn-robux');
-  var paypalBtn  = document.getElementById('btn-paypal');
-  var robuxSec   = document.getElementById('donate-robux-section');
-  var paypalSec  = document.getElementById('donate-paypal-section');
-  var arrow      = document.getElementById('arrow-robux');
-
-  if (method === 'robux') {
-    robuxBtn.style.borderColor  = 'rgba(107,107,255,.4)';
-    robuxBtn.style.background   = 'rgba(107,107,255,.1)';
-    robuxBtn.style.color        = 'var(--t0)';
-    robuxBtn.style.opacity      = '1';
-    paypalBtn.style.borderColor = 'var(--b0)';
-    paypalBtn.style.background  = 'rgba(255,255,255,.04)';
-    paypalBtn.style.color       = 'var(--t1)';
-    paypalBtn.style.opacity     = '.5';
-    robuxSec.style.maxHeight    = '2000px';
-    robuxSec.style.opacity      = '1';
-    paypalSec.style.display     = 'none';
-    paypalSec.style.maxHeight   = '0';
-    paypalSec.style.opacity     = '0';
-    if (arrow) arrow.style.transform = 'rotate(0deg)';
-  } else {
-    paypalBtn.style.borderColor = 'rgba(0,156,222,.35)';
-    paypalBtn.style.background  = 'rgba(0,156,222,.08)';
-    paypalBtn.style.color       = 'var(--t0)';
-    paypalBtn.style.opacity     = '1';
-    robuxBtn.style.borderColor  = 'var(--b0)';
-    robuxBtn.style.background   = 'rgba(255,255,255,.04)';
-    robuxBtn.style.color        = 'var(--t1)';
-    robuxBtn.style.opacity      = '.5';
-    robuxSec.style.maxHeight    = '0';
-    robuxSec.style.opacity      = '0';
-    paypalSec.style.display     = 'block';
-    setTimeout(function() {
-      paypalSec.style.maxHeight = '400px';
-      paypalSec.style.opacity   = '1';
-    }, 10);
-    if (arrow) arrow.style.transform = 'rotate(180deg)';
-  }
-}
 
 /* ── REVIEWS ── */
 var JSONBIN_ID = 'YOUR_BIN_ID';
@@ -857,7 +843,7 @@ function renderReviews(reviews) {
       '<p style="font-size:.8rem;color:var(--t1);line-height:1.75;margin-bottom:12px">"' + r.text + '"</p>' +
       '<div style="font-size:.65rem;color:var(--t2);font-family:Geist Mono,monospace">' + r.name + ' &middot; ' + r.date + '</div>';
     list.appendChild(el);
-    tilt(el);
+    attachCard(el);
   });
 }
 
@@ -896,6 +882,31 @@ function submitReview() {
     setStar(0); selectedStars = 0;
     loadAllReviews();
 
+/* ── SCROLL REVEAL ── */
+(function() {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  function observeReveal() {
+    document.querySelectorAll('.card, .page .h1, .page .sub, .page .eyebrow').forEach(function(el) {
+      if (!el.classList.contains('reveal')) {
+        el.classList.add('reveal');
+        obs.observe(el);
+      }
+    });
+  }
+  observeReveal();
+  /* re-observe after tab switch */
+  var origGo = go;
+  var _goWrap = function(name) {
+    origGo(name);
+    setTimeout(observeReveal, 50);
+  };
+  window.go = _goWrap;
+})();
+
 /* init pill on first active tab */
 (function() {
   var on = document.querySelector('.tab.on');
@@ -917,45 +928,90 @@ loadAllReviews();
 </script>
 
 <!-- DONATE MODAL -->
-<div id="donate-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(24px);align-items:center;justify-content:center">
-  <div style="background:rgba(10,11,22,.96);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:28px;width:min(380px,calc(100% - 32px));box-shadow:0 24px 64px rgba(0,0,0,.6)">
+<div id="donate-modal" style="position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease">
+  <div id="modal-box" style="background:rgba(10,11,22,.95);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px 16px 24px 24px;width:min(420px,calc(100% - 28px));box-shadow:0 32px 80px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.04) inset;transform:scale(.88) translateY(20px);transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .25s ease;opacity:0">
+
+    <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-      <div>
-        <div style="font-size:.56rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(238,238,243,.25);font-family:'Geist Mono',monospace;margin-bottom:4px">Donate</div>
-        <div style="font-size:1.1rem;font-weight:700;color:#eeeef3" id="modal-title">Support Vexyron</div>
-      </div>
-      <button onclick="closeModal()" style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(238,238,243,.5);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+      <div style="font-size:.52rem;font-weight:600;letter-spacing:3.5px;text-transform:uppercase;color:rgba(238,238,243,.22);font-family:'Geist Mono',monospace">Support</div>
+      <button onclick="closeModal()" style="background:transparent;border:none;color:rgba(238,238,243,.35);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .12s;padding:4px" onmouseenter="this.style.color='rgba(238,238,243,.8)'" onmouseleave="this.style.color='rgba(238,238,243,.35)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
 
-    <div style="font-size:.78rem;color:rgba(238,238,243,.5);margin-bottom:20px">Choose your payment method:</div>
-
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <!-- Robux -->
-      <a id="modal-robux-link" href="#" target="_blank" style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-decoration:none;transition:border-color .15s,background .15s" onmouseenter="this.style.borderColor='rgba(107,107,255,.4)';this.style.background='rgba(107,107,255,.08)'" onmouseleave="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.05)'">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(107,107,255,.15);border:1px solid rgba(107,107,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <span style="font-size:1em;line-height:1">⏣</span>
-        </div>
-        <div style="flex:1">
-          <div style="font-size:.84rem;font-weight:600;color:#eeeef3;margin-bottom:2px">Robux Gamepass</div>
-          <div style="font-size:.7rem;color:rgba(238,238,243,.4)">Purchase directly on Roblox</div>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(238,238,243,.25)" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-
-      <!-- PayPal (coming soon) -->
-      <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:16px;opacity:.45;cursor:not-allowed">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,112,186,.1);border:1px solid rgba(0,112,186,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#009cde"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 6.082-8.558 6.082H9.828l-1.51 9.568h3.562l.992-6.29h2.104c4.744 0 7.564-2.29 8.418-6.83.28-1.495.086-2.67-.172-3.243z"/></svg>
-        </div>
-        <div style="flex:1">
-          <div style="font-size:.84rem;font-weight:600;color:#eeeef3;margin-bottom:2px">PayPal</div>
-          <div style="font-size:.7rem;color:rgba(238,238,243,.4)">Coming soon</div>
-        </div>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(255,255,255,.08);color:rgba(238,238,243,.4);padding:3px 8px;border-radius:100px">Soon</div>
-      </div>
+    <!-- Amount -->
+    <div style="margin-bottom:24px">
+      <div id="modal-title" style="font-size:2.2rem;font-weight:800;color:#eeeef3;letter-spacing:-1.5px;line-height:1;margin-bottom:4px">100</div>
+      <div style="font-size:.78rem;color:rgba(238,238,243,.35);font-family:'Geist Mono',monospace;letter-spacing:1px">ROBUX</div>
     </div>
 
-    <div style="margin-top:16px;font-size:.68rem;color:rgba(238,238,243,.25);text-align:center">Every donation keeps Vexyron free for everyone.</div>
+    <!-- Gamepass link -->
+    <a id="modal-robux-link" href="#" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px;text-decoration:none;transition:background .15s,border-color .15s;margin-bottom:12px" onmouseenter="this.style.background='rgba(107,107,255,.07)';this.style.borderColor='rgba(107,107,255,.3)'" onmouseleave="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(255,255,255,.07)'">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:48px;height:48px;border-radius:12px;background:rgba(107,107,255,.12);border:1px solid rgba(107,107,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:2rem;line-height:1">⏣</div>
+        <div>
+          <div style="font-size:.84rem;font-weight:600;color:#eeeef3;margin-bottom:2px">Open on Roblox</div>
+          <div style="font-size:.68rem;color:rgba(238,238,243,.3)">Opens the Gamepass page</div>
+        </div>
+      </div>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(238,238,243,.2)" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <div style="font-size:.62rem;color:rgba(238,238,243,.15);text-align:center">Every donation keeps Vexyron free for everyone.</div>
+  </div>
+</div>
+</body>
+</html>/* init pill on first active tab */
+(function() {
+  var on = document.querySelector('.tab.on');
+  if (on) { setTimeout(function() { movePill(on); }, 50); }
+})();
+  })
+  .catch(function() { showMsg('Something went wrong.', '#ff453a'); });
+}
+
+function showMsg(txt, color) {
+  var el = document.getElementById('review-msg');
+  if (!el) return;
+  el.textContent = txt;
+  el.style.color = color;
+  el.style.display = 'block';
+}
+
+loadAllReviews();
+</script>
+
+<!-- DONATE MODAL -->
+<div id="donate-modal" style="position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease">
+  <div id="modal-box" style="background:rgba(10,11,22,.95);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px 16px 24px 24px;width:min(420px,calc(100% - 28px));box-shadow:0 32px 80px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.04) inset;transform:scale(.88) translateY(20px);transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .25s ease;opacity:0">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div style="font-size:.52rem;font-weight:600;letter-spacing:3.5px;text-transform:uppercase;color:rgba(238,238,243,.22);font-family:'Geist Mono',monospace">Support</div>
+      <button onclick="closeModal()" style="background:transparent;border:none;color:rgba(238,238,243,.35);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .12s;padding:4px" onmouseenter="this.style.color='rgba(238,238,243,.8)'" onmouseleave="this.style.color='rgba(238,238,243,.35)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Amount -->
+    <div style="margin-bottom:24px">
+      <div id="modal-title" style="font-size:2.2rem;font-weight:800;color:#eeeef3;letter-spacing:-1.5px;line-height:1;margin-bottom:4px">100</div>
+      <div style="font-size:.78rem;color:rgba(238,238,243,.35);font-family:'Geist Mono',monospace;letter-spacing:1px">ROBUX</div>
+    </div>
+
+    <!-- Gamepass link -->
+    <a id="modal-robux-link" href="#" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px;text-decoration:none;transition:background .15s,border-color .15s;margin-bottom:12px" onmouseenter="this.style.background='rgba(107,107,255,.07)';this.style.borderColor='rgba(107,107,255,.3)'" onmouseleave="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(255,255,255,.07)'">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:48px;height:48px;border-radius:12px;background:rgba(107,107,255,.12);border:1px solid rgba(107,107,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:2rem;line-height:1">⏣</div>
+        <div>
+          <div style="font-size:.84rem;font-weight:600;color:#eeeef3;margin-bottom:2px">Open on Roblox</div>
+          <div style="font-size:.68rem;color:rgba(238,238,243,.3)">Opens the Gamepass page</div>
+        </div>
+      </div>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(238,238,243,.2)" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <div style="font-size:.62rem;color:rgba(238,238,243,.15);text-align:center">Every donation keeps Vexyron free for everyone.</div>
   </div>
 </div>
 </body>

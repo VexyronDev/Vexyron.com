@@ -41,17 +41,20 @@ html,body{height:100%;background:var(--bg);color:var(--t0);font-family:'Geist',s
 #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
 
 /* NAV */
-nav{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;width:min(calc(100% - 24px),860px);display:flex;align-items:center;justify-content:space-between;padding:0 5px 0 14px;height:44px;background:rgba(7,8,16,0.88);backdrop-filter:blur(48px) saturate(200%);border:1px solid var(--b0);border-radius:13px;box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 8px 28px rgba(0,0,0,.55);animation:navIn .5s cubic-bezier(.16,1,.3,1) both;position:fixed;}
+nav{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;width:auto;display:flex;align-items:center;justify-content:space-between;padding:0 5px 0 14px;height:44px;background:rgba(7,8,16,0.88);backdrop-filter:blur(48px) saturate(200%);border:1px solid var(--b0);border-radius:13px;box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 8px 28px rgba(0,0,0,.55);animation:navIn .5s cubic-bezier(.16,1,.3,1) both;position:fixed;}
 @keyframes navIn{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .logo{display:flex;align-items:center;flex-shrink:0}
 .logo img{height:22px;filter:brightness(0) invert(1);opacity:.85}
 .logo span{font-size:.8rem;font-weight:700;color:var(--t0);display:none}
 .tabs{display:flex;gap:1px;position:relative}
-.tab{font-size:.7rem;font-weight:500;padding:6px 12px;color:var(--t1);background:transparent;border:none;border-radius:8px;font-family:'Geist',sans-serif;cursor:pointer;transition:color .12s,background .12s}
+.tab{position:relative;z-index:1;width:36px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--t1);background:transparent;border:none;border-radius:8px;font-family:'Geist',sans-serif;cursor:pointer;transition:color .12s,background .12s}
 .tab:hover{color:var(--t0);background:rgba(255,255,255,.05)}
-#tab-pill{position:absolute;top:0;left:0;height:100%;border-radius:8px;background:rgba(255,255,255,.09);box-shadow:0 1px 0 rgba(255,255,255,.07) inset;transition:left .22s cubic-bezier(.34,1,.56,1),width .22s cubic-bezier(.34,1,.56,1);pointer-events:none;z-index:0}
-.tab{position:relative;z-index:1}
 .tab.on{color:var(--t0);background:transparent}
+.tab svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+/* TOOLTIP */
+.tab::after{content:attr(data-tip);position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(20,20,35,.96);color:var(--t0);font-family:'Geist',sans-serif;font-size:.6rem;font-weight:600;letter-spacing:.5px;white-space:nowrap;padding:4px 9px;border-radius:7px;border:1px solid rgba(255,255,255,.08);pointer-events:none;opacity:0;transition:opacity .14s;z-index:200}
+.tab:hover::after{opacity:1}
+#tab-pill{position:absolute;top:0;left:0;height:100%;border-radius:8px;background:rgba(255,255,255,.09);box-shadow:0 1px 0 rgba(255,255,255,.07) inset;transition:left .22s cubic-bezier(.34,1,.56,1),width .22s cubic-bezier(.34,1,.56,1);pointer-events:none;z-index:0}
 
 /* WRAP */
 .wrap{position:relative;z-index:10;height:100vh;overflow-y:auto;padding-top:66px}
@@ -180,7 +183,8 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
 @media(max-width:720px){
   nav{height:auto;flex-direction:column;padding:8px;gap:6px;top:6px;width:calc(100% - 12px)}
   .tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;width:100%}
-  .tab{font-size:.52rem;padding:5px 2px;text-align:center;border-radius:7px}
+  .tab{width:100%;height:34px;border-radius:7px}
+  .tab::after{display:none}
   .wrap{padding-top:100px}
   .g3,.g4{grid-template-columns:1fr}
   .gcols,.s-grid{grid-template-columns:1fr}
@@ -266,13 +270,32 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
     <img src="https://vexyrondev.github.io/Vexyron.com/Vexyron.Logo.png" alt="Vexyron" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
     <span>Vexyron</span>
   </div>
-  <div class="tabs">
-    <button class="tab on" onclick="go('home')">Home</button>
-    <button class="tab" onclick="go('features')">Features</button>
-    <button class="tab" onclick="go('team')">Team</button>
-    <button class="tab" onclick="go('socials')">Socials</button>
-    <button class="tab" onclick="go('scripts')">Scripts</button>
-    <button class="tab" onclick="go('donate')">Donate</button>
+  <div class="tabs" id="tabs-wrap">
+    <div id="tab-pill"></div>
+    <!-- Home -->
+    <button class="tab on" data-tip="Home" onclick="go('home')" aria-label="Home">
+      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
+    </button>
+    <!-- Features -->
+    <button class="tab" data-tip="Features" onclick="go('features')" aria-label="Features">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </button>
+    <!-- Team -->
+    <button class="tab" data-tip="Team" onclick="go('team')" aria-label="Team">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+    </button>
+    <!-- Socials -->
+    <button class="tab" data-tip="Socials" onclick="go('socials')" aria-label="Socials">
+      <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    </button>
+    <!-- Scripts -->
+    <button class="tab" data-tip="Scripts" onclick="go('scripts')" aria-label="Scripts">
+      <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    </button>
+    <!-- Donate -->
+    <button class="tab" data-tip="Donate" onclick="go('donate')" aria-label="Donate">
+      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
   </div>
 </nav>
 

@@ -45,10 +45,10 @@ body{background:linear-gradient(135deg,#1a1a1a,#242424,#1e1e1e,#2a2a2a);backgrou
 #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
 
 /* NAV */
-nav{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;width:auto;min-width:380px;display:flex;align-items:center;justify-content:space-between;padding:0 5px 0 20px;height:44px;background:rgba(0,0,0,0.25);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.10);border-radius:13px;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 4px 20px rgba(0,0,0,.2);animation:navIn .5s cubic-bezier(.16,1,.3,1) both;position:fixed;}
+nav{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;width:auto;min-width:380px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 16px;gap:16px;height:44px;background:rgba(0,0,0,0.25);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.10);border-radius:13px;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 4px 20px rgba(0,0,0,.2);animation:navIn .5s cubic-bezier(.16,1,.3,1) both;position:fixed;}
 @keyframes navIn{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.logo{display:flex;align-items:center;flex-shrink:0}
-.logo img{height:28px;filter:brightness(0) invert(1);opacity:.85}
+.logo{display:flex;align-items:center;flex-shrink:0;padding-right:8px;border-right:1px solid rgba(255,255,255,.08)}
+.logo img{height:26px;filter:brightness(0) invert(1);opacity:.9}
 .logo span{font-size:.8rem;font-weight:700;color:var(--t0);display:none}
 .tabs{display:flex;gap:1px;position:relative}
 .tab{position:relative;z-index:1;width:36px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--t1);background:transparent;border:none;border-radius:8px;font-family:'Geist',sans-serif;cursor:pointer;transition:color .12s,background .12s}
@@ -292,10 +292,7 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
     <button class="tab" data-tip="Socials" onclick="go('socials')" aria-label="Socials">
       <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
     </button>
-    <!-- Scripts -->
-    <button class="tab" data-tip="Scripts" onclick="go('scripts')" aria-label="Scripts">
-      <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-    </button>
+
 
   </div>
 </nav>
@@ -420,21 +417,7 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
     </div>
   </div>
 
-  <!-- SCRIPTS -->
-  <div class="panel" id="panel-scripts">
-    <div class="page">
-      <div class="eyebrow">Scripts</div>
-      <h2 class="h1">Scripts <em>Dashboard.</em></h2>
-      <p class="sub">Browse all Vexyron scripts and copy with one click.</p>
-      <div class="notice">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span>Click <strong>Copy Script</strong> then paste into your executor.</span>
-      </div>
-      <input class="search" type="text" id="search" placeholder="Search scripts..." oninput="filterScripts()"/>
-      <div class="s-grid" id="scripts-grid"></div>
-      <div class="s-empty" id="scripts-empty" style="display:none">No scripts found.</div>
-    </div>
-  </div>
+
 
 
 
@@ -449,7 +432,7 @@ footer{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:10px 24px;displ
 <div id="toast">Copied!</div>
 
 <script>
-var TABS = ['home','features','team','socials','scripts'];
+var TABS = ['home','features','team','socials'];
 
 function movePill(el) {
   var pill = document.getElementById('tab-pill');
@@ -546,66 +529,11 @@ function copyLoader() {
   });
 }
 
-/* GITHUB SCRIPTS */
-var GH = 'VexyronDev', REPO = 'Vexyron.web', FILE = 'Scripts.json';
-var SCRIPTS = [];
-
-function loadScripts() {
-  var grid = document.getElementById('scripts-grid');
-  grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t2);font-size:.78rem">Loading...</div>';
-  fetch('https://raw.githubusercontent.com/' + GH + '/' + REPO + '/main/' + FILE + '?t=' + Date.now())
-    .then(function(r) { return r.json(); })
-    .then(function(data) { SCRIPTS = data; renderScripts(SCRIPTS); })
-    .catch(function() {
-      grid.innerHTML = '';
-      document.getElementById('scripts-empty').style.display = 'block';
-    });
-}
-
-function copyScript(i) {
-  var btn = document.getElementById('sc-' + i);
-  copyText(SCRIPTS[i].voicemodUrl, function() {
-    btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-    btn.style.cssText = 'color:var(--green);border-color:rgba(47,209,88,.28)';
-    toast('Script copied!');
-    setTimeout(function() {
-      btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Script';
-      btn.style.cssText = '';
-    }, 2000);
-  });
-}
-
-function filterScripts() {
-  var q = document.getElementById('search').value.toLowerCase().trim();
-  renderScripts(q ? SCRIPTS.filter(function(s) {
-    return [s.name, s.category, s.desc].some(function(v) { return v.toLowerCase().indexOf(q) > -1; });
-  }) : SCRIPTS);
-}
-
-function renderScripts(list) {
-  var grid = document.getElementById('scripts-grid');
-  var empty = document.getElementById('scripts-empty');
-  grid.innerHTML = '';
-  if (!list.length) { empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  list.forEach(function(s) {
-    var i = SCRIPTS.indexOf(s);
-    var el = document.createElement('div');
-    el.className = 'card s-card';
-    el.innerHTML = '<div class="s-thumb">' +
-      (s.imageUrl ? '<img src="' + s.imageUrl + '" alt="' + s.name + '" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" onerror="this.style.display=\'none\'">' :
-      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>') +
-      '</div><div class="s-info"><div class="s-name">' + s.name + '</div><div class="s-desc">' + s.desc + '</div><div class="s-meta">' + s.category + ' · ' + s.duration + '</div></div>' +
-      '<div style="padding:0 12px 12px;margin-top:auto"><button class="copy-btn" id="sc-' + i + '" onclick="copyScript(' + i + ')">' +
-      '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Script</button></div>';
-    grid.appendChild(el);
-    attachCard(el);
-  });
-}
 
 
 
-loadScripts();
+
+
 
 /* STARS */
 (function() {
